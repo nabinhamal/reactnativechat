@@ -64,7 +64,7 @@ const createToken = (userId) => {
   };
 
   // Generate the token with a secret key and expiration time
-  const token = jwt.sign(payload, "Q$r2K6W8n!jCW%Zk", { expiresIn: "1h" });
+  const token = jwt.sign(payload, "Q$r2Kassdsaw6W8n!jCW%Zk", { expiresIn: "24h" });
 
   return token;
 };
@@ -102,5 +102,56 @@ app.post("/login", (req, res) => {
     });
 });
   
+//endpoint to access all the users except the user who's is currently logged in!
+app.get("/users/:userId", (req, res) => {
+  const loggedInUserId = req.params.userId;
 
-//endpoint to acces all the user
+  User.find({ _id: { $ne: loggedInUserId } })
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      console.log("Error retrieving users", err);
+      res.status(500).json({ message: "Error retrieving users" });
+    });
+});
+
+//endpoint to send a request to a user
+app.post("/friend-request", async (req, res) => {
+  const { currentUserId, selectedUserId } = req.body;
+
+  try {
+    //update the recepient's friendRequestsArray!
+    await User.findByIdAndUpdate(selectedUserId, {
+      $push: { freindRequests: currentUserId },
+    });
+
+    //update the sender's sentFriendRequests array
+    await User.findByIdAndUpdate(currentUserId, {
+      $push: { sentFriendRequests: selectedUserId },
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
+//endpoint to show all the friend-requests of a particular user
+app.get("/friend-request/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    //fetch the user document based on the User id
+    const user = await User.findById(userId)
+      .populate("freindRequests", "name email image")
+      .lean();
+
+    const freindRequests = user.freindRequests;
+
+    res.json(freindRequests);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
