@@ -5,9 +5,10 @@ import { UserType } from '../UserContext'
 const User = ({item}) => {
   const {userId,setUserId} = useContext(UserType)
   const [requestSent, setRequestSent] = useState(false);
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch("http://192.168.1.66:8000/friend-request", {
+      const response = await fetch(`${apiUrl}/friend-request`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

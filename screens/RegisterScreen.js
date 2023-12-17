@@ -18,6 +18,7 @@ import {
     const [image, setImage] = useState("");
     const navigation = useNavigation();
     const handleRegister = () => {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       const user = {
         name: name,
         email: email,
@@ -27,7 +28,7 @@ import {
   
       // send a POST  request to the backend API to register the user
       
-      axios.post("http://192.168.1.66:8000/register", user, { timeout: 5000 })
+      axios.post(`${apiUrl}/register`, user, { timeout: 5000 })
 
         .then((response) => {
           console.log(response);
