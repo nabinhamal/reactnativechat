@@ -118,7 +118,7 @@ import {
                   width: 300,
                 }}
                 placeholderTextColor={"black"}
-                placeholder="enter Your Email"
+                placeholder="Enter Your Email"
               />
             </View>
   
@@ -159,7 +159,7 @@ import {
                   width: 300,
                 }}
                 placeholderTextColor={"black"}
-                placeholder="Image"
+                placeholder="Add the Url of the image"
               />
             </View>
   
